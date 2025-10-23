@@ -1,0 +1,36 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/database/generated"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Graph {
+  id        Int      @id @default(autoincrement())
+  name      String
+  nodes     Node[]
+  edges     Edge[]
+  createdAt DateTime @default(now())
+}
+
+model Node {
+  id        Int      @id @default(autoincrement())
+  graph     Graph    @relation(fields: [graphId], references: [id])
+  graphId   Int
+  label     String
+  meta      Json?
+  createdAt DateTime @default(now())
+}
+
+model Edge {
+  id        Int      @id @default(autoincrement())
+  graph     Graph    @relation(fields: [graphId], references: [id])
+  graphId   Int
+  fromId    Int
+  toId      Int
+  weight    Float    @default(1.0)
+  createdAt DateTime @default(now())
+}
